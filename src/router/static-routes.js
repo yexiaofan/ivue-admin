@@ -146,7 +146,7 @@ export const siderRoutes = [
         path: 'test10',
         name: 'test10',
         meta: {
-          title: '测试10测试10测试10测试10测试10',
+          title: '测试10',
           icon: 'ios-paper'
         },
         component: () => import('../views/test/test10.vue')
@@ -166,7 +166,7 @@ export const siderRoutes = [
         path: '/test-q',
         name: 'test-q',
         meta: {
-          title: '测试模块2测试模块2测试模块2测试模块2测试模块2',
+          title: '测试模块2',
           icon: 'ios-paper'
         },
         component: () => import('../views/test-q.vue')

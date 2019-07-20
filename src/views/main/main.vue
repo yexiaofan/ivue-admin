@@ -6,7 +6,7 @@
   <div class="wrapper main">
     <div class="main-sider">
       <img  src="../../assets/logo.png" alt="logo加载失败">
-      <!--菜单最多支持三级菜单-->
+      <!--菜单最多支持二级菜单-->
       <sider-menu :menuList="menuList" :openNames="openNames"></sider-menu>
     </div>
     <div class="main-header">
@@ -81,7 +81,7 @@ export default {
       }
       this.$store.commit('removePageOpenedList', { route: this.$route, action })
       if (isRemoveSelected) {
-        // 移除单个tag，导航到上一个tag的页面
+        // 移除单个tag，导航到最后一个tag的页面
         this.$router.push({
           name: this.$store.state.app.pageOpenedList[this.$store.state.app.pageOpenedList.length - 1].name
         })

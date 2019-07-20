@@ -20,13 +20,15 @@
 @padding: 16px;
 
 // 默认样式
-.body {
-  
+* {
+  box-sizing: border-box;
 }
 
 .wrapper {
-  min-height: 100vh;
+  height: 100vh;
   overflow-x: hidden;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 
 a {
@@ -39,6 +41,15 @@ a:hover {
 
 .dark-a {
   color: @title-color;
+}
+
+// 清除float
+.clear-float::after {
+  display:block;
+  clear:both;
+  content:"";
+  visibility:hidden;
+  height:0
 }
 
 // 动画

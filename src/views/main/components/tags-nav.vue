@@ -1,43 +1,46 @@
 <style lang="less" scoped>
 @import "../../../base.less";
 .tags-nav {
-  display: grid;
-  grid-template-columns: 20px auto 20px 24px;
-  grid-gap: 2px;
-  justify-items: stretch;
-  align-items: center;
-  background-color: @divider-color;
+  display: flex;
+  align-items: stretch;
+  height: 40px;
+  padding: 2px 0;
+  background-color: @background-color;
+  a {
+    margin-right: 1px;
+    width: 24px;
+  }
+  a:hover {
+    color: @light-theme-color;
+  }
+  a:first-of-type {
+    margin-right: 4px;
+  }
   a,
   .dropdown-btn {
     display: inline-block;
     color: @title-color;
     background-color: @white;
     text-align: center;
-    height: 34px;
-    line-height: 34px;
+    line-height: 36px;
     position: relative;
     z-index: 10;
   }
   .tags-wrapper {
+    flex: 1 1 auto;
     position: relative;
     .tags-wrapper-scroll {
-      background-color: aqua;
-      display: flex;
       position: absolute;
-      top: -18px;
-      z-index: 0;
+      top: 0px;
+      left: 0;
+      z-index: 5;
       height: 36px;
+      overflow: visible;
       white-space: nowrap;
       transition: all .3s ease-in-out;
       .tag {
         flex-shrink: 0;
       }
-    }
-    .absolute-left {
-      left: 0
-    }
-    .absolute-right {
-      right: 0
     }
   }
 }
@@ -48,12 +51,8 @@
     <a href="javascript:void(0)" @click="handleScroll('left')">
       <Icon type="ios-arrow-back" size="16" />
     </a>
-    <div class="tags-wrapper" ref="tagsWrapper" id="test">
-      <div
-        class="tags-wrapper-scroll"
-        ref="tagsWrapperScroll"
-        :style="{ left: leftPosition + 'px' }"
-      >
+    <div class="tags-wrapper" ref="tagsWrapper">
+      <div class="tags-wrapper-scroll" ref="tagsWrapperScroll" :style="{ left: leftOffset + 'px' }">
         <transition-group name="slide-fade">
           <Tag
             class="tag slide-fade-item"
@@ -65,7 +64,7 @@
             checkable
             :name="tag.name"
             :color="tag.selected ? 'primary': 'default'"
-            @on-close="closeTag(index)"
+            @on-close="closeTag(index, $event, tag.name)"
             @on-change="tagSelected(index)"
           >{{tag.title}}</Tag>
         </transition-group>
@@ -75,7 +74,7 @@
       <Icon type="ios-arrow-forward" size="16" />
     </a>
     <Dropdown class="dropdown-btn" placement="bottom-end" @on-click="closeTags">
-      <a href="javascript:void(0)">
+      <a href="javascript:void(0)" style="margin-right: 0;">
         <Icon type="ios-arrow-down" size="16" />
       </a>
       <DropdownMenu slot="list">
@@ -90,12 +89,8 @@
 export default {
   data () {
     return {
-      currentPageOpenedName: null,
-      tagsWrapperWidth: 0,
-      scrollWrapperWidth: 0,
-      tagClosedWidth: 0,
-      leftPosition: 0,
-      isTagClosedEvent: false
+      currentPageName: this.$route.name,
+      leftOffset: 0
     }
   },
   props: {
@@ -103,126 +98,56 @@ export default {
       type: Array
     }
   },
-  watch: {
-    currentPageOpenedName () {
-      this.$nextTick(() => {
-        this.setTagsWrapperScrollPosition()
-      })
-    },
-    $route (to) {
-      this.currentPageOpenedName = to.name
-    }
-  },
   methods: {
     closeTags (action) {
-      this.isTagClosedEvent = true
       this.$emit('closeTags', action)
-
-      this.$nextTick(() => {
-        this.setTagsWrapperScrollPosition()
-      })
+      if (action === 'closeOthers') {
+        this.leftOffset = 0
+      }
     },
-    closeTag (index) {
-      this.isTagClosedEvent = true
+    closeTag (index, event, name) {
       // 移除单个tag，且首页的tag无法移除
       if (index !== 0) {
         this.$emit('closeTags', index)
       }
-      if (this.$refs.tagsPageOpened[index].name !== this.currentPageOpenedName) {
-        this.$nextTick(() => {
-          this.setTagsWrapperScrollPosition()
-        })
+      if (this.currentPageName !== name) {
+        this.leftOffset = Math.min(0, this.leftOffset + event.target.parentNode.offsetWidth)
       }
     },
     tagSelected (index) {
       this.$emit('tagSelected', index)
     },
-    setTagsWrapperScrollPosition () {
-      this.initTagsWrapperWidth().then(() => {
-        this.compouteScrollWrapperPosition()
-      })
-    },
-    initTagsWrapperWidth () {
-      return new Promise((resolve, reject) => {
-        this.tagsWrapperWidth = this.$refs.tagsWrapper.clientWidth
-        let scrollWrapperWidth = this.$refs.tagsWrapperScroll.clientWidth
-        if (this.isTagClosedEvent) {
-          // 因为像素取整会存在误差，所以认为差值为10以内都是相同的值
-          let interval = setInterval(() => {
-            scrollWrapperWidth = this.$refs.tagsWrapperScroll.clientWidth
-            if (Math.abs(scrollWrapperWidth - this.scrollWrapperWidth) > 10) {
-              this.scrollWrapperWidth = scrollWrapperWidth
-              this.isTagClosedEvent = false
-              clearInterval(interval)
-              resolve()
-            }
-          }, 0)
-        } else {
-          this.scrollWrapperWidth = scrollWrapperWidth
-          this.isTagClosedEvent = false
-          resolve()
-        }
-      })
-    },
-    compouteScrollWrapperPosition () {
-      const refsTagList = this.$refs.tagsPageOpened
-      const length = refsTagList.length
-      if (this.scrollWrapperWidth > this.tagsWrapperWidth) {
-        // 如果当前路由对应最后一个tag
-        if (this.currentPageOpenedName === refsTagList[length - 1].name) {
-          this.leftPosition = -(this.scrollWrapperWidth - this.tagsWrapperWidth)
-        } else {
-          // 检查当前的tag是否处在可视区域
-          let tagSelected
-          for (let tag of refsTagList) {
-            if (this.currentPageOpenedName === tag.name) {
-              tagSelected = tag
-              break
-            }
-          }
-          const visible = this.checkTagIsVisible(tagSelected.$el)
-          if (!visible.isVisible) {
-            // 若不在可视区，则需要调整定位
-            const diffValue = visible.position === 'left'
-              ? -tagSelected.$el.offsetLeft
-              : this.tagsWrapperWidth - tagSelected.$el.offsetLeft - tagSelected.$el.clientWidth
-            this.leftPosition = diffValue
-          }
-        }
-      } else {
-        this.leftPosition = 0
-      }
-    },
-    checkTagIsVisible (tagSelectedNode) {
+    checkTagIsVisible (tag) {
       let visible = {
         isVisible: false,
         position: 'left'
       }
-      const leftDiffValue = tagSelectedNode.offsetLeft + this.leftPosition
-      const rightDiffValue = this.tagsWrapperWidth - this.leftPosition - tagSelectedNode.clientWidth - tagSelectedNode.offsetLeft
+      const leftDiffValue = tag.offsetLeft + this.leftOffset
+      if (leftDiffValue < 0) {
+        return visible
+      }
+      const rightDiffValue = this.$refs.tagsWrapper.offsetWidth - this.leftOffset - tag.offsetWidth - tag.offsetLeft
       if (leftDiffValue >= 0 && rightDiffValue >= 0) {
         visible.isVisible = true
       } else {
-        visible.position = rightDiffValue < 0 ? 'right' : 'left'
+        visible.position = 'right'
       }
       return visible
     },
     handleScroll (direaction) {
-      if (this.scrollWrapperWidth > this.tagsWrapperWidth) {
-        // 获取在可视区域临界的tag
-        let criticalTag = this.getCriticalTag(direaction)
-        switch (direaction) {
-          case 'left':
-            this.leftPosition = Math.min(this.tagsWrapperWidth - criticalTag.$el.offsetLeft, 0)
-            break
-          case 'right':
-            const diffValue1 = -(criticalTag.$el.offsetLeft + criticalTag.$el.clientWidth)
-            const diffvalue2 = -(this.scrollWrapperWidth - this.tagsWrapperWidth)
-            this.leftPosition = Math.max(diffValue1, diffvalue2)
-            break
-          default:
-            break
-        }
+      // 获取在可视区域临界的tag
+      let criticalTag = this.getCriticalTag(direaction)
+      switch (direaction) {
+        case 'left':
+          this.leftOffset = Math.min(this.$refs.tagsWrapper.offsetWidth - criticalTag.$el.offsetLeft, 0)
+          break
+        case 'right':
+          const diffValue1 = -(criticalTag.$el.offsetLeft + criticalTag.$el.clientWidth)
+          const diffvalue2 = -(this.$refs.tagsWrapperScroll.offsetWidth - this.$refs.tagsWrapper.offsetWidth)
+          this.leftOffset = Math.max(diffValue1, diffvalue2)
+          break
+        default:
+          break
       }
     },
     getCriticalTag (direaction) {
@@ -238,10 +163,45 @@ export default {
         }
       }
       return criticalTag
+    },
+    setTagsWrapperScrollPosition (tag) {
+      const visible = this.checkTagIsVisible(tag)
+      if (!visible.isVisible && visible.position === 'left') {
+        // 标签位于可视区域的左侧
+        this.leftOffset = -tag.offsetLeft
+      } else {
+        // 标签位于可视区域的右侧 or 可视区域
+        this.leftOffset = Math.min(0, -(tag.offsetWidth + tag.offsetLeft - this.$refs.tagsWrapper.offsetWidth + 4))
+      }
     }
   },
-  created () {
-    this.currentPageOpenedName = this.$route.name
+  mounted () {
+    // 初始化当前打开页面的标签位置
+    const refsTag = this.$refs.tagsPageOpened
+    setTimeout(() => {
+      for (const tag of refsTag) {
+        if (tag.name === this.$route.name) {
+          const tagNode = tag.$el
+          this.setTagsWrapperScrollPosition(tagNode)
+          break
+        }
+      }
+    }, 1)
+  },
+  watch: {
+    $route (to) {
+      this.currentPageName = to.name
+      this.$nextTick(() => {
+        const refsTag = this.$refs.tagsPageOpened
+        for (const tag of refsTag) {
+          if (tag.name === this.$route.name) {
+            const tagNode = tag.$el
+            this.setTagsWrapperScrollPosition(tagNode)
+            break
+          }
+        }
+      })
+    }
   }
 }
 </script>

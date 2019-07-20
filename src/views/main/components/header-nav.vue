@@ -1,25 +1,35 @@
 <style lang="less" scoped>
 @import "../../../base.less";
 .header-nav {
-  color: @title-color;
-  display: grid;
-  grid-template-columns: 26px auto 264px;
-  column-gap: 24px;
+  display: flex;
   align-items: center;
+  height: 64px;
+  color: @title-color;
+  // display: grid;
+  // grid-template-columns: 26px auto 264px;
+  // column-gap: 24px;
+  // align-items: center;
   padding: 0 @padding;
   .bread-crumb {
+    flex: 1 1 auto;
+    margin-left: 16px;
     text-align: left;
     font-size: 20px;
   }
   .config-wrapper {
-    display: grid;
-    grid-template-columns: repeat(2, 40px) auto;
-    justify-items: end;
-    align-items: center;
+    flex: 0 0 264px;
+    line-height: 32px;
+    text-align: left;
     a {
       i {
         font-size: 20px;
       }
+    }
+    .dark-a {
+      margin-right: 16px;
+    }
+    .avator-wrapper {
+      float: right;
     }
   }
 }
@@ -37,7 +47,7 @@
         >{{path}}</BreadcrumbItem>
       </Breadcrumb>
     </div>
-    <div class="config-wrapper">
+    <div class="config-wrapper clear-float">
       <a class="dark-a" href="javascript:void(0)">
         <Tooltip :content="isFullScreen ? '退出全屏' : '全屏'" placement="bottom">
           <Icon :type="isFullScreen ? 'md-contract' : 'md-expand'" :size="23"></Icon>
@@ -48,9 +58,9 @@
           <Icon type="md-settings" size="23" />
         </Tooltip>
       </a>
-      <Dropdown style="margin-left: 20px">
+      <Dropdown class="avator-wrapper" style="margin-left: 20px">
         <a href="javascript:void(0)">
-          Admin
+          admin
           <Icon type="md-arrow-dropdown" />
           <Avatar :src="avatorUrl"></Avatar>
         </a>
