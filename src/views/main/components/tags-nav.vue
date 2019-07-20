@@ -22,16 +22,22 @@
     position: relative;
     .tags-wrapper-scroll {
       background-color: aqua;
-      height: 36px;
       display: flex;
       position: absolute;
       top: -18px;
-      left: 0;
       z-index: 0;
+      height: 36px;
       white-space: nowrap;
+      transition: all .3s ease-in-out;
       .tag {
         flex-shrink: 0;
       }
+    }
+    .absolute-left {
+      left: 0
+    }
+    .absolute-right {
+      right: 0
     }
   }
 }
@@ -39,7 +45,7 @@
 
 <template>
   <div class="tags-nav">
-    <a>
+    <a href="javascript:void(0)" @click="handleScroll('left')">
       <Icon type="ios-arrow-back" size="16" />
     </a>
     <div class="tags-wrapper" ref="tagsWrapper" id="test">
@@ -65,7 +71,7 @@
         </transition-group>
       </div>
     </div>
-    <a>
+    <a href="javascript:void(0)" @click="handleScroll('right')">
       <Icon type="ios-arrow-forward" size="16" />
     </a>
     <Dropdown class="dropdown-btn" placement="bottom-end" @on-click="closeTags">
@@ -81,7 +87,6 @@
 </template>
 
 <script>
-import { setTimeout, clearTimeout, setImmediate } from 'timers';
 export default {
   data () {
     return {
@@ -89,154 +94,150 @@ export default {
       tagsWrapperWidth: 0,
       scrollWrapperWidth: 0,
       tagClosedWidth: 0,
-      leftPosition: 0
-    };
+      leftPosition: 0,
+      isTagClosedEvent: false
+    }
   },
   props: {
     pageOpenedList: {
       type: Array
-    },
-    isOpenNewPage: {
-      type: Boolean
     }
   },
   watch: {
     currentPageOpenedName () {
       this.$nextTick(() => {
-        this.setScrollWrapperWidth()
-        const isTagVisible = this.checkTagIsVisible(this.currentPageOpenedName)
-        if (!isTagVisible) {
-          console.log(isTagVisible)
-          this.setTagSelectedPosition()
-        }
+        this.setTagsWrapperScrollPosition()
       })
-    },
-    leftPosition () {
-      console.log('^^^^^^^^^^^^')
-      console.log(this.leftPosition)
-      this.leftPosition = this.leftPosition > 0 ? 0 : this.leftPosition
     },
     $route (to) {
       this.currentPageOpenedName = to.name
-    } 
+    }
   },
   methods: {
     closeTags (action) {
-      this.leftPosition = 0
-      this.$emit("closeTags", action)
+      this.isTagClosedEvent = true
+      this.$emit('closeTags', action)
+
+      this.$nextTick(() => {
+        this.setTagsWrapperScrollPosition()
+      })
     },
     closeTag (index) {
+      this.isTagClosedEvent = true
       // 移除单个tag，且首页的tag无法移除
       if (index !== 0) {
-        this.$emit("closeTags", index)
+        this.$emit('closeTags', index)
       }
       if (this.$refs.tagsPageOpened[index].name !== this.currentPageOpenedName) {
-        this.tagClosedWidth = event.target.parentNode.clientWidth
-        this.setScrollWrapperWidth(this.tagClosedWidth)
-        this.compouteScrollWrapperPosition(this.tagClosedWidth)
+        this.$nextTick(() => {
+          this.setTagsWrapperScrollPosition()
+        })
       }
     },
     tagSelected (index) {
-      this.$emit("tagSelected", index);
+      this.$emit('tagSelected', index)
     },
-    checkTagIsVisible (name) {
-      let isVisible = false
-      const refsTagList = this.$refs.tagsPageOpened
-      const length = refsTagList.length
-
-      if (refsTagList[length - 1].name === this.currentPageOpenedName) {
-        return isVisible
-      }
-
-      let tagSelectedWidth = 0
-      let tagSelectedOffsetLeft = 0
-      for (let i = 0; i < length; i++) {
-        if (name === refsTagList[i].name) {
-          tagSelectedWidth = refsTagList[i].$el.clientWidth
-          tagSelectedOffsetLeft = refsTagList[i].$el.offsetLeft
-          break
-        }
-      }
-      const leftDiffValue = tagSelectedOffsetLeft + this.leftPosition
-      const rightDiffValue = this.tagsWrapperWidth - (leftDiffValue + tagSelectedWidth)
-      if (leftDiffValue >= 0 && rightDiffValue >= 0) {
-        isVisible = true
-      }
-      return isVisible
+    setTagsWrapperScrollPosition () {
+      this.initTagsWrapperWidth().then(() => {
+        this.compouteScrollWrapperPosition()
+      })
     },
-    setTagSelectedPosition () {
-      const refsTagList = this.$refs.tagsPageOpened
-      const length = refsTagList.length
-      let tagSelectedOffsetLeft = 0
-      for (let i = 0; i < length; i++) {
-        if (this.currentPageOpenedName === refsTagList[i].name) {
-          console.log(this.currentPageOpenedName)
-          console.log(this.leftPosition)
-          console.log(this.scrollWrapperWidth)
-          console.log(this.tagsWrapperWidth)
-          if (i === length - 1) {
-            this.leftPosition += -(this.scrollWrapperWidth - this.tagsWrapperWidth + this.leftPosition)
-            console.log(this.leftPosition)
-          } else {
-            // 多减1个像素，防止重边
-            console.log('175')
-            this.leftPosition = -(refsTagList[i+1].$el.offsetLeft - this.tagsWrapperWidth - 1)
-          }
-          break
-        }
-      }
-    },
-    setScrollWrapperWidth (tagClosedWidth) {
-      this.tagsWrapperWidth = this.$refs.tagsWrapper.clientWidth
-      let scrollWrapperWidth = this.$refs.tagsWrapperScroll.clientWidth
-      // 重新渲染后实际tagsWrapperScroll的宽度
-      scrollWrapperWidth = tagClosedWidth
-        ? scrollWrapperWidth - tagClosedWidth - 4
-        : scrollWrapperWidth
-      this.scrollWrapperWidth = scrollWrapperWidth
-    },
-    compouteScrollWrapperPosition (tagClosedWidth) {
-      if (tagClosedWidth) {
-        // closeTag event
-        if (this.scrollWrapperWidth > this.tagsWrapperWidth) {
-          console.log('***********')
-          let diff_value = this.leftPosition + tagClosedWidth
-          if (diff_value < 0) {
-            // 偏移距离误差修正
-            const diff_x = this.computeOffsetError()
-            console.log(diff_x)
-            diff_value += diff_x
-          }
-          this.$nextTick(() => { 
-            setTimeout(() => {
-              console.log('205')
-              this.leftPosition = Math.min(diff_value, 0)
-              // 
-            }, 200)
-          })
+    initTagsWrapperWidth () {
+      return new Promise((resolve, reject) => {
+        this.tagsWrapperWidth = this.$refs.tagsWrapper.clientWidth
+        let scrollWrapperWidth = this.$refs.tagsWrapperScroll.clientWidth
+        if (this.isTagClosedEvent) {
+          // 因为像素取整会存在误差，所以认为差值为10以内都是相同的值
+          let interval = setInterval(() => {
+            scrollWrapperWidth = this.$refs.tagsWrapperScroll.clientWidth
+            if (Math.abs(scrollWrapperWidth - this.scrollWrapperWidth) > 10) {
+              this.scrollWrapperWidth = scrollWrapperWidth
+              this.isTagClosedEvent = false
+              clearInterval(interval)
+              resolve()
+            }
+          }, 0)
         } else {
-          console.log('$$$$$$$$$$')
-          this.$nextTick(() => {
-            setTimeout(() => {
-              console.log('214')
-              this.leftPosition = 0
-            }, 200)
-          })
+          this.scrollWrapperWidth = scrollWrapperWidth
+          this.isTagClosedEvent = false
+          resolve()
+        }
+      })
+    },
+    compouteScrollWrapperPosition () {
+      const refsTagList = this.$refs.tagsPageOpened
+      const length = refsTagList.length
+      if (this.scrollWrapperWidth > this.tagsWrapperWidth) {
+        // 如果当前路由对应最后一个tag
+        if (this.currentPageOpenedName === refsTagList[length - 1].name) {
+          this.leftPosition = -(this.scrollWrapperWidth - this.tagsWrapperWidth)
+        } else {
+          // 检查当前的tag是否处在可视区域
+          let tagSelected
+          for (let tag of refsTagList) {
+            if (this.currentPageOpenedName === tag.name) {
+              tagSelected = tag
+              break
+            }
+          }
+          const visible = this.checkTagIsVisible(tagSelected.$el)
+          if (!visible.isVisible) {
+            // 若不在可视区，则需要调整定位
+            const diffValue = visible.position === 'left'
+              ? -tagSelected.$el.offsetLeft
+              : this.tagsWrapperWidth - tagSelected.$el.offsetLeft - tagSelected.$el.clientWidth
+            this.leftPosition = diffValue
+          }
+        }
+      } else {
+        this.leftPosition = 0
+      }
+    },
+    checkTagIsVisible (tagSelectedNode) {
+      let visible = {
+        isVisible: false,
+        position: 'left'
+      }
+      const leftDiffValue = tagSelectedNode.offsetLeft + this.leftPosition
+      const rightDiffValue = this.tagsWrapperWidth - this.leftPosition - tagSelectedNode.clientWidth - tagSelectedNode.offsetLeft
+      if (leftDiffValue >= 0 && rightDiffValue >= 0) {
+        visible.isVisible = true
+      } else {
+        visible.position = rightDiffValue < 0 ? 'right' : 'left'
+      }
+      return visible
+    },
+    handleScroll (direaction) {
+      if (this.scrollWrapperWidth > this.tagsWrapperWidth) {
+        // 获取在可视区域临界的tag
+        let criticalTag = this.getCriticalTag(direaction)
+        switch (direaction) {
+          case 'left':
+            this.leftPosition = Math.min(this.tagsWrapperWidth - criticalTag.$el.offsetLeft, 0)
+            break
+          case 'right':
+            const diffValue1 = -(criticalTag.$el.offsetLeft + criticalTag.$el.clientWidth)
+            const diffvalue2 = -(this.scrollWrapperWidth - this.tagsWrapperWidth)
+            this.leftPosition = Math.max(diffValue1, diffvalue2)
+            break
+          default:
+            break
         }
       }
     },
-    computeOffsetError () {
+    getCriticalTag (direaction) {
+      let criticalTag
       const refsTagList = this.$refs.tagsPageOpened
-      const length = refsTagList.length
-      const tagNodeSelected = refsTagList[length - 1].$el
-      // 检查最后一个tag是否可见
-      const isTagVisible = this.checkTagIsVisible(refsTagList[length - 1].name)
-      console.log(isTagVisible)
-      if (isTagVisible) {
-        // 获取偏移误差 W-(offset-|left|+tagWidth)
-        const diff_x = this.tagsWrapperWidth - (tagNodeSelected.offsetLeft + this.leftPosition + tagNodeSelected.clientWidth)
-        return diff_x
+      for (let tag of refsTagList) {
+        // 检查tag是否在可视区
+        if (this.checkTagIsVisible(tag.$el).isVisible) {
+          criticalTag = tag
+          if (direaction === 'left') {
+            break
+          }
+        }
       }
+      return criticalTag
     }
   },
   created () {
