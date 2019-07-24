@@ -1,5 +1,7 @@
+import router from '../../router/router'
 const app = {
   state: {
+    i18nLang: 'ja_JP', // 国际化语言
     menuList: [],
     menuListMap: {}, // 将每个路径对title进行映射
     pageOpenedList: [{
@@ -8,9 +10,15 @@ const app = {
       selected: true
     }],
     currentPath: ['首页'],
-    currentMenuOpenNames: []
+    currentMenuOpenNames: [],
+    asyncRoutesCompleted: false // 是否添加过动态路由数据
   },
   mutations: {
+    // 添加动态路由
+    updateAppRouter (state, routes) {
+      router.addRoutes(routes)
+      state.asyncRoutesCompleted = true
+    },
     // 设置左侧菜单数据
     setMenuList (state, menus) {
       state.menuList = state.menuList.concat(menus)
@@ -78,11 +86,22 @@ const app = {
       state.currentPath = state.currentPath.concat(currentPathArr)
     },
     // 设置当前左侧菜单的openNames属性
-    setCurrentMenuOpenNames (state, name = false) {
-      state.currentMenuOpenNames = []
-      if (name !== false) {
-        state.currentMenuOpenNames.push(name)
-      }
+    setCurrentMenuOpenNames (state, routeMatched) {
+      if (routeMatched.length ===0 || typeof routeMatched[0] === 'string') {
+        state.currentMenuOpenNames = routeMatched
+      } else {
+        state.currentMenuOpenNames = []
+        for (const menu of state.menuList) {
+          if (menu.name === routeMatched[0].name) {
+            state.currentMenuOpenNames.push(menu.name)
+            if (routeMatched[1].meta.parentName) {
+              state.currentMenuOpenNames.push(routeMatched[1].meta.parentName)
+            }
+            break
+          }
+        }
+      }// dockerfile修改：减小镜像打包体积
+      console.log(state.currentMenuOpenNames)
     }
   },
   actions: {}

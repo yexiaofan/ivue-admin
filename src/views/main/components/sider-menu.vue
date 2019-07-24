@@ -3,6 +3,7 @@
 .sider-menu {
   text-align: left;
   font-size: 32px;
+  overflow: auto;
   .menu-item-title {
     width: 100%;
     overflow: hidden;
@@ -19,26 +20,42 @@
 
 <template>
   <div class="sider-menu">
-    <Menu theme="dark" :open-names="openNames" accordion width="200" :active-name="activeName" @on-select="menuSlected">
+    <Menu :accordion="false" theme="dark" :open-names="openNames" width="200" :active-name="activeName" @on-select="menuSlected" @on-open-change="openChange">
       <template v-for="(menu_1, index) in menuList">
         <template v-if="menu_1.children.length === 1">
           <MenuItem :name="menu_1.children[0].name" :key="'menu_1_' + index"
             :class="[activeName === menu_1.children[0].name ? 'menu-slected' : '']"
-            :title="menu_1.children[0].meta.title">
-            <span class="menu-item-title"><Icon :type="menu_1.children[0].meta.icon" />&nbsp;{{menu_1.children[0].meta.title}}</span>
+            :title="menu_1.children[0].title">
+            <span class="menu-item-title"><Icon :type="menu_1.children[0].icon" />&nbsp;{{menu_1.children[0].title}}</span>
           </MenuItem>
         </template>
         <template v-else>
           <Submenu :name="menu_1.name" :key="'menu_1_' + index">
             <template slot="title">
               <span class="menu-item-title">
-                <Icon :type="menu_1.meta.icon" />&nbsp;{{menu_1.meta.title}}
+                <Icon :type="menu_1.icon" />&nbsp;{{menu_1.title}}
               </span>
             </template>
             <template v-for="(menu_2, index) in menu_1.children">
-              <MenuItem :name="menu_2.name" :key="'menu_2_' + index" :title="menu_2.meta.title">
-                <span class="menu-item-title"><Icon :type="menu_2.meta.icon" />&nbsp;{{menu_2.meta.title}}</span>
-              </MenuItem>
+              <template v-if="menu_2.children">
+                <Submenu :name="menu_2.name" :key="'menu_2_' + index">
+                  <template slot="title">
+                    <span class="menu-item-title">
+                      <Icon :type="menu_2.icon" />&nbsp;{{menu_2.title}}
+                    </span>
+                  </template>
+                  <template v-for="(menu_3, index) in menu_2.children">
+                    <MenuItem :name="menu_3.name" :key="'menu_3_' + index" :title="menu_3.title">
+                      <span class="menu-item-title"><Icon :type="menu_3.icon" />&nbsp;{{menu_3.title}}</span>
+                    </MenuItem>
+                  </template>
+                </Submenu>
+              </template>
+              <template v-else>
+                <MenuItem :name="menu_2.name" :key="'menu_2_' + index" :title="menu_2.title">
+                  <span class="menu-item-title"><Icon :type="menu_2.icon" />&nbsp;{{menu_2.title}}</span>
+                </MenuItem>
+              </template>
             </template>
           </Submenu>
         </template>
@@ -68,6 +85,9 @@ export default {
   methods: {
     menuSlected (name) {
       this.$router.push({ name })
+    },
+    openChange (openNames) {
+      this.$store.commit('setCurrentMenuOpenNames', openNames)
     }
   }
 }

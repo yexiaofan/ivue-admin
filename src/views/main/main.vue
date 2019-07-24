@@ -4,20 +4,19 @@
 
 <template>
   <div class="wrapper main">
-    <div class="main-sider">
+    <div class="main-sider menu-scrollbar">
       <img  src="../../assets/logo.png" alt="logo加载失败">
       <!--菜单最多支持二级菜单-->
       <sider-menu :menuList="menuList" :openNames="openNames"></sider-menu>
     </div>
     <div class="main-header">
       <header-nav :currentPath="currentPath"
-        :isFullScreen.sync="isFullScreen"
         :avatorUrl="avatorUrl"></header-nav>
       <tags-nav :pageOpenedList="pageOpenedList"
         @closeTags="closeTags"
         @tagSelected="tagSelected"></tags-nav>
     </div>
-    <div class="main-content">
+    <div class="main-content common-scrollbar">
       <router-view></router-view>
     </div>
   </div>
@@ -28,7 +27,6 @@ export default {
   name: 'Main',
   data () {
     return {
-      isFullScreen: false,
       avatorUrl: 'https://i.loli.net/2017/08/21/599a521472424.jpg'
     }
   },
@@ -53,7 +51,7 @@ export default {
   },
   watch: {
     $route (to) {
-      // console.log(to)
+      console.log(to)
       // 路由变化，更新PageOpenedList
       let index = this.$util.indexOfCurrentPageOpened(to.name, this.$store.state.app.pageOpenedList)
       this.$store.commit('setPageOpenedList', { route: to, index })
@@ -61,7 +59,7 @@ export default {
       let currentPathArr = this.$util.initCurrentPath(to.name, this.menuList)
       this.$store.commit('setCurrentPath', currentPathArr)
       // 设置左侧菜单的选中项
-      this.$store.commit('setCurrentMenuOpenNames', to.matched[0].name)
+      this.$store.commit('setCurrentMenuOpenNames', to.matched)
     }
   },
   methods: {
@@ -72,7 +70,7 @@ export default {
       let currentPathArr = this.$util.initCurrentPath(this.$route.name, this.menuList)
       this.$store.commit('setCurrentPath', currentPathArr)
       // 设置左侧菜单的选中项
-      this.$store.commit('setCurrentMenuOpenNames', this.$route.matched[0].name)
+      this.$store.commit('setCurrentMenuOpenNames', this.$route.matched)
     },
     closeTags (action) {
       let isRemoveSelected

@@ -1,3 +1,4 @@
+import { getMenuList, getMenuRoutes } from './dynamic-routes'
 /**
  * 分为三种路由：
  * 1.路由出口在App.vue
@@ -30,150 +31,165 @@ const otherRoutes = {
   children: []
 }
 
-// 3.路由出口在main.vue，且为sider菜单项
-export const siderRoutes = [
+// 3.路由出口在main.vue，且为sider菜单项，静态配置菜单目前只支持二级菜单显示
+const siderTree = [
   {
-    path: '/main',
+    path: '',
     name: 'main-home',
-    meta: {
-      title: '首页',
-      icon: 'ios-paper'
-    },
+    title: '首页',
+    icon: 'ios-paper',
+    type: 'menu',
     component: () => import('../views/main/main.vue'),
     children: [
       {
         path: '/home',
         name: 'home',
-        meta: {
-          title: '首页',
-          icon: 'ios-paper'
-        },
+        title: '首页',
+        icon: 'ios-paper',
+        type: 'menu',
         component: () => import('../views/home/home.vue')
       }
     ]
   },
-  {
-    path: '/test',
-    name: 'test',
-    meta: {
-      title: '测试',
-      icon: 'ios-paper'
-    },
-    component: () => import('../views/main/main.vue'),
-    children: [
-      {
-        path: 'test1',
-        name: 'test1',
-        meta: {
-          title: '测试1',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test.vue')
-      },
-      {
-        path: 'test2',
-        name: 'test2',
-        meta: {
-          title: '测试2',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test2.vue')
-      },
-      {
-        path: 'test3',
-        name: 'test3',
-        meta: {
-          title: '测试3',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test3.vue')
-      },
-      {
-        path: 'test4',
-        name: 'test4',
-        meta: {
-          title: '测试4',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test4.vue')
-      },
-      {
-        path: 'test5',
-        name: 'test5',
-        meta: {
-          title: '测试5',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test5.vue')
-      },
-      {
-        path: 'test6',
-        name: 'test6',
-        meta: {
-          title: '测试6',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test6.vue')
-      },
-      {
-        path: 'test7',
-        name: 'test7',
-        meta: {
-          title: '测试7',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test7.vue')
-      },
-      {
-        path: 'test8',
-        name: 'test8',
-        meta: {
-          title: '测试8',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test8.vue')
-      },
-      {
-        path: 'test9',
-        name: 'test9',
-        meta: {
-          title: '测试9',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test9.vue')
-      },
-      {
-        path: 'test10',
-        name: 'test10',
-        meta: {
-          title: '测试10',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test/test10.vue')
-      }
-    ]
-  },
-  {
-    path: '/main',
-    name: 'main-q',
-    meta: {
-      title: '测试模块2',
-      icon: 'ios-paper'
-    },
-    component: () => import('../views/main/main.vue'),
-    children: [
-      {
-        path: '/test-q',
-        name: 'test-q',
-        meta: {
-          title: '测试模块2',
-          icon: 'ios-paper'
-        },
-        component: () => import('../views/test-q.vue')
-      }
-    ]
-  }
+  // {
+  //   path: '/test',
+  //   name: 'test',
+  //   title: '测试',
+  //   icon: 'ios-paper',
+  //   type: 'menu',
+  //   component: () => import('../views/main/main.vue'),
+  //   children: [
+  //     {
+  //       path: 'test1',
+  //       name: 'test1',
+  //       title: '测试1',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test.vue')
+  //     },
+  //     {
+  //       path: 'test2',
+  //       name: 'test2',
+  //       title: '测试2',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test2.vue')
+  //     },
+  //     {
+  //       path: 'test3',
+  //       name: 'test3',
+  //       title: '测试3',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test3.vue')
+  //     },
+  //     {
+  //       path: 'test4',
+  //       name: 'test4',
+  //       title: '测试4',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test4.vue')
+  //     },
+  //     {
+  //       path: 'test5',
+  //       name: 'test5',
+  //       title: '测试5',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test5.vue')
+  //     },
+  //     {
+  //       path: 'test8',
+  //       name: 'test8',
+  //       title: '测试8',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test8.vue')
+  //     },
+  //     {
+  //       path: 'test9',
+  //       name: 'test9',
+  //       title: '测试9测试9测试9测试9测试9测试9',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test9.vue')
+  //     },
+  //     {
+  //       path: 'test10',
+  //       name: 'test10',
+  //       title: '测试10',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test10.vue')
+  //     },
+  //     {
+  //       // 二级菜单
+  //       path: '',
+  //       name: 'test11',
+  //       title: '测试11',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: '',
+  //       children: [
+  //         {
+  //           path: 'test11-1',
+  //           name: 'test11-1',
+  //           title: '测试11-1测试11-1测试11-1测试11-1',
+  //           icon: 'ios-paper',
+  //           type: 'menu',
+  //           component: () => import('../views/test/test11.vue')
+  //         },
+  //         {
+  //           path: 'test11-2',
+  //           name: 'test11-2',
+  //           title: '测试11-2',
+  //           component: () => import('../views/home/home-child.vue')
+  //         }
+  //       ]
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/main',
+  //   name: 'main-q',
+  //   title: '测试模块2',
+  //   icon: 'ios-paper',
+  //   type: 'menu',
+  //   component: () => import('../views/main/main.vue'),
+  //   children: [
+  //     {
+  //       path: '/test-q',
+  //       name: 'test-q',
+  //       title: '测试模块2',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test-q.vue')
+  //     },
+  //     {
+  //       path: 'test6',
+  //       name: 'test6',
+  //       title: '测试6',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test6.vue')
+  //     },
+  //     {
+  //       path: 'test7',
+  //       name: 'test7',
+  //       title: '测试7',
+  //       icon: 'ios-paper',
+  //       type: 'menu',
+  //       component: () => import('../views/test/test7.vue')
+  //     }
+  //   ]
+  // }
 ]
+const staticMenuList = getMenuList(siderTree)
+const staticSiderRoutes = getMenuRoutes(siderTree)
+console.log(staticSiderRoutes)
 
 // 汇总所有的路由
-export const staticRoutes = [otherRoutes, ...siderRoutes, ...singleRoutes]
+const staticRoutes = [otherRoutes, ...staticSiderRoutes, ...singleRoutes]
+
+export { staticRoutes, staticMenuList }
