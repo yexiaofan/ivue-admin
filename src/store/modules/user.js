@@ -5,6 +5,8 @@ const user = {
   mutations: {
     logout (state) {
       // 清理账号
+      this.state.app.menuList = []
+      this.state.app.asyncRoutesCompleted = false
       state.userInfo = null
       localStorage.clear()
       sessionStorage.clear()
@@ -18,4 +20,4 @@ const user = {
   }
 }
 
-export default app
+export default user

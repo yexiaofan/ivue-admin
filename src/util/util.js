@@ -180,4 +180,32 @@ util.encryptPassword = function (str) {
   }
 }
 
+// 对比两个Routes数组的内容是否一致, 返回需要添加的路有数据
+// 注意： 这部分逻辑只针对两层的路由嵌套
+util.martchRoutes = function (targetArr, sourceArr, root = null) {
+  const temp = []
+  targetArr.forEach(target => {
+    const tempRoot = root || target
+    sourceArr.forEach(source => {
+      console.log(target.name)
+      console.log(source.name)
+      console.log(target.name === source.name)
+      if (target.name === source.name) {
+        if (target.children && source.children) {
+          // 继续对比children数组
+          const newChildren = util.martchRoutes(target.children, source.children, tempRoot)
+          if (newChildren.length > 0) {
+            tempRoot.children = newChildren
+            temp.push(tempRoot)
+          }
+        }
+      } else {
+        // 目标路由需要添加进理由
+        temp.push(target)
+      }
+    })
+  })
+  return temp
+}
+
 export default util

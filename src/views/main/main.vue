@@ -5,7 +5,9 @@
 <template>
   <div class="wrapper main">
     <div class="main-sider menu-scrollbar">
-      <img  src="../../assets/logo.png" alt="logo加载失败">
+      <div class="logo">
+        <Icon type="ios-water" />LOGO
+      </div>
       <!--菜单最多支持二级菜单-->
       <sider-menu :menuList="menuList" :openNames="openNames"></sider-menu>
     </div>

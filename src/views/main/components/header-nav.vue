@@ -76,15 +76,15 @@
           <Icon type="md-settings" size="23" />
         </Tooltip>
       </a>
-      <Dropdown class="avator-wrapper" style="margin-left: 20px">
+      <Dropdown class="avator-wrapper" style="margin-left: 20px" @on-click="handleClick">
         <a href="javascript:void(0)">
           admin
           <Icon type="md-arrow-dropdown" />
           <Avatar :src="avatorUrl"></Avatar>
         </a>
         <DropdownMenu slot="list">
-          <DropdownItem>{{$t('header.userCenter')}}</DropdownItem>
-          <DropdownItem>{{$t('header.logout')}}</DropdownItem>
+          <DropdownItem name="userCenter">{{$t('header.userCenter')}}</DropdownItem>
+          <DropdownItem name="logout">{{$t('header.logout')}}</DropdownItem>
         </DropdownMenu>
       </Dropdown>
     </div>
@@ -207,6 +207,17 @@ export default {
         isFullScreen = false
       }
       return isFullScreen
+    },
+    handleClick (action) {
+      switch (action) {
+        case 'logout':
+          this.$store.commit('logout')
+          this.$router.push('/login')
+          break;
+      
+        default:
+          break;
+      }
     }
   },
   created () {

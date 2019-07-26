@@ -13,7 +13,7 @@ const singleRoutes = [
   {
     // 设置初始页面
     path: '',
-    redirect: '/home'
+    redirect: '/login'
   },
   {
     path: '/login',
@@ -25,7 +25,7 @@ const singleRoutes = [
 // 3.路由出口在main.vue，且为sider菜单项，静态配置菜单目前只支持二级菜单显示
 const siderTree = [
   {
-    path: '',
+    path: '/main',
     name: 'main-home',
     title: '首页',
     icon: 'ios-paper',
@@ -178,7 +178,6 @@ const siderTree = [
 ]
 const staticMenuList = getMenuList(siderTree)
 const staticSiderRoutes = getMenuRoutes(siderTree)
-console.log(staticSiderRoutes)
 
 // 汇总所有的路由
 const staticRoutes = [...staticSiderRoutes, ...singleRoutes]

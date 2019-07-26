@@ -1,9 +1,7 @@
 import router from '../../router/router'
 const app = {
   state: {
-    i18nLang: 'ja_JP', // 国际化语言
     menuList: [],
-    menuListMap: {}, // 将每个路径对title进行映射
     pageOpenedList: [{
       title: '首页',
       name: 'home',
@@ -11,11 +9,23 @@ const app = {
     }],
     currentPath: ['首页'],
     currentMenuOpenNames: [],
-    asyncRoutesCompleted: false // 是否添加过动态路由数据
+    asyncRoutesCompleted: false, // 是否添加过动态路由数据
+    acyncRoutes: []
   },
   mutations: {
     // 添加动态路由
     updateAppRouter (state, routes) {
+      // 过滤acyncRoutes，防止添加重复数据，删除已不存在的数据
+      let tempRoutes = []
+      let tempAsyncRoutes = []
+      if (state.acyncRoutes.length === 0) {
+        tempRoutes = routes
+        tempAsyncRoutes = routes
+      } else {
+        routes.forEach(route => {
+          
+        })
+      }
       router.addRoutes(routes)
       state.asyncRoutesCompleted = true
     },
@@ -100,8 +110,7 @@ const app = {
             break
           }
         }
-      }// dockerfile修改：减小镜像打包体积
-      console.log(state.currentMenuOpenNames)
+      }
     }
   },
   actions: {}

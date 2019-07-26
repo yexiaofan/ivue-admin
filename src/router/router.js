@@ -20,8 +20,7 @@ export default router
 router.beforeEach((to, from, next) => {
   // iview 加载进度条
   iView.LoadingBar.start()
-  if (from.path === '/' && !from.name) {
-    // initSiderMenuAndAsyncRoutes(to, next)
+  if (from.path === '/' && !from.name || from.name === 'login') {
     // 页面刷新或第一次打开页面
     if (store.state.app.asyncRoutesCompleted) {
       next()
