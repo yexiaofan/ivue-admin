@@ -2,8 +2,7 @@ import { getMenuList, getMenuRoutes } from './dynamic-routes'
 /**
  * 分为三种路由：
  * 1.路由出口在App.vue
- * 2.路由出口在main.vue，但非左侧菜单项
- * 3.路由出口在main.vue，且为左侧菜单项
+ * 2.路由出口在main.vue
  * 注意：为避免不必要的错误，每个路由需设置name属性！！！
  * 注意：为避免不必要的错误，每个路由需设置name属性！！！
  * 注意：为避免不必要的错误，每个路由需设置name属性！！！
@@ -17,19 +16,11 @@ const singleRoutes = [
     redirect: '/home'
   },
   {
-    path: '/welcome',
-    name: 'welcome',
-    component: () => import('../views/welcome.vue')
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/login/login.vue')
   }
 ]
-
-// 2.路由出口在main.vue，但非sider菜单项
-const otherRoutes = {
-  path: 'main',
-  name: 'otherRoutes',
-  component: () => import('../views/main/main.vue'),
-  children: []
-}
 
 // 3.路由出口在main.vue，且为sider菜单项，静态配置菜单目前只支持二级菜单显示
 const siderTree = [
@@ -190,6 +181,6 @@ const staticSiderRoutes = getMenuRoutes(siderTree)
 console.log(staticSiderRoutes)
 
 // 汇总所有的路由
-const staticRoutes = [otherRoutes, ...staticSiderRoutes, ...singleRoutes]
+const staticRoutes = [...staticSiderRoutes, ...singleRoutes]
 
 export { staticRoutes, staticMenuList }
