@@ -28,4 +28,3 @@ const vm = new Vue({
 }).$mount('#app')
 
 export default vm
-

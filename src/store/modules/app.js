@@ -26,9 +26,7 @@ const app = {
         // 过滤已经存在的路由
         tempRoutes = util.martchRoutes(routes, state.acyncRoutes)
         // 保存已添加但是不可访问的路由数据
-        state.unaccessibleAcyncRoutes  = util.martchRoutes(state.acyncRoutes, routes)
-        console.log('***********')
-        console.log(state.unaccessibleAcyncRoutes)
+        state.unaccessibleAcyncRoutes = util.martchRoutes(state.acyncRoutes, routes)
         // 将新的路由进行合并
         tempRoutes.forEach(route => {
           if (route.children) {
@@ -117,7 +115,7 @@ const app = {
     },
     // 设置当前左侧菜单的openNames属性
     setCurrentMenuOpenNames (state, routeMatched) {
-      if (routeMatched.length ===0 || typeof routeMatched[0] === 'string') {
+      if (routeMatched.length === 0 || typeof routeMatched[0] === 'string') {
         state.currentMenuOpenNames = routeMatched
       } else {
         state.currentMenuOpenNames = []

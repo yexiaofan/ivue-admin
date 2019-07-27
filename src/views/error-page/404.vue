@@ -11,15 +11,5 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-
-      }
-    },
-    components: {
-
-    }
-  }
+export default {}
 </script>
-

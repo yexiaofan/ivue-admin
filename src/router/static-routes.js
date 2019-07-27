@@ -46,7 +46,7 @@ const siderTree = [
         component: () => import('../views/home/home.vue')
       }
     ]
-  },
+  }
   // {
   //   path: '/test',
   //   name: 'test',

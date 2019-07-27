@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import iView from 'iview'
 import Router from 'vue-router'
-import { staticRoutes, siderRoutes, staticMenuList } from './static-routes'
+import { staticRoutes, staticMenuList } from './static-routes'
 import util from '../util/util'
 import store from '../store/store'
 import getDynamicMenusRes from './dynamic-routes'

@@ -164,37 +164,36 @@ export default {
     },
     requestFullScreen (element) {
       // 判断各种浏览器，找到正确的方法
-      const requestMethod = element.requestFullScreen || //W3C
-        element.webkitRequestFullScreen || //Chrome, safari
-        element.mozRequestFullScreen || //FireFox
-        element.msRequestFullScreen; //IE11
+      const requestMethod = element.requestFullScreen || // W3C
+        element.webkitRequestFullScreen || // Chrome, safari
+        element.mozRequestFullScreen || // FireFox
+        element.msRequestFullScreen // IE11
       if (requestMethod) {
-        requestMethod.call(element);
-      } else if (typeof window.ActiveXObject !== "undefined") { //for Internet Explorer
-        var wscript = new ActiveXObject("WScript.Shell");
+        requestMethod.call(element)
+      } else if (typeof window.ActiveXObject !== 'undefined') { // for Internet Explorer
+        var wscript = new ActiveXObject('WScript.Shell')
         if (wscript !== null) {
-          wscript.SendKeys("{F11}");
+          wscript.SendKeys('{F11}')
         }
       }
     },
     exitFullScreen () {
-      var exitMethod = document.exitFullscreen || //W3C
-        document.mozCancelFullScreen || //FireFox
-        document.webkitExitFullscreen || //Chrome等
-        document.msExitFullscreen; //IE11
+      var exitMethod = document.exitFullscreen || // W3C
+        document.mozCancelFullScreen || // FireFox
+        document.webkitExitFullscreen || // Chrome等
+        document.msExitFullscreen // IE11
       if (exitMethod) {
-        exitMethod.call(document);
-      } else if (typeof window.ActiveXObject !== "undefined") { //for Internet Explorer
-        var wscript = new ActiveXObject("WScript.Shell");
+        exitMethod.call(document)
+      } else if (typeof window.ActiveXObject !== 'undefined') { // for Internet Explorer
+        var wscript = new ActiveXObject('WScript.Shell')
         if (wscript !== null) {
-          wscript.SendKeys("{F11}");
+          wscript.SendKeys('{F11}')
         }
-        
       }
     },
     addFullScreenListener () {
       const self = this
-      window.onresize = function() {
+      window.onresize = function () {
         self.isFullScreen = self.checkFullScreen()
       }
     },
@@ -213,10 +212,9 @@ export default {
         case 'logout':
           this.$store.commit('logout')
           this.$router.push('/login')
-          break;
-      
+          break
         default:
-          break;
+          break
       }
     }
   },

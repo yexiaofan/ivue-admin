@@ -1,4 +1,5 @@
-const menus1 = [{
+const menus1 = [
+  {
     id: 1,
     parentId: 0,
     url: '/main',
@@ -185,15 +186,15 @@ let menus = menus1
 setTimeout(() => {
   console.log('change to menus2')
   menus = menus2
-},5000)
+}, 5000)
 
-async function getDynamicMenusRes() {
+async function getDynamicMenusRes () {
   const menus = await getDynamicMenus()
   const dynamicMenuRes = initMenuTree(menus)
   return dynamicMenuRes
 }
 
-function getDynamicMenus() {
+function getDynamicMenus () {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       console.log('成功获取menus')
@@ -203,7 +204,7 @@ function getDynamicMenus() {
   })
 }
 
-function initMenuTree(menus) {
+function initMenuTree (menus) {
   const cloneMenus = JSON.parse(JSON.stringify(menus))
   const tree = []
   let leaves = []
@@ -223,7 +224,7 @@ function initMenuTree(menus) {
   }
 }
 
-function buildTree(tree, leaves) {
+function buildTree (tree, leaves) {
   leaves = deleteUselessElement(leaves)
   while (leaves.length > 0) {
     leaves.forEach((leaf, index) => {
@@ -235,7 +236,7 @@ function buildTree(tree, leaves) {
   }
 }
 
-function addLeaf(parents, leaf, index, leaves) {
+function addLeaf (parents, leaf, index, leaves) {
   for (const parent of parents) {
     if (parent.id === leaf.parentId) {
       if (parent.children && Array.isArray(parent.children)) {
@@ -255,7 +256,7 @@ function addLeaf(parents, leaf, index, leaves) {
   }
 }
 
-function deleteUselessElement(array) {
+function deleteUselessElement (array) {
   let temp = []
   array.forEach(ele => {
     if (ele) {
@@ -265,7 +266,7 @@ function deleteUselessElement(array) {
   return temp
 }
 
-export function getMenuList(menus) {
+export function getMenuList (menus) {
   const tempList = []
   menus.forEach(ele => {
     if (ele.type && ele.type === 'menu') {
@@ -282,14 +283,14 @@ export function getMenuList(menus) {
   return tempList
 }
 
-export function getMenuRoutes(tree) {
+export function getMenuRoutes (tree) {
   const menuRoutes = buildMenuRoutesStep1(tree)
   buildMenuRoutesStep2(menuRoutes)
   buildMenuRoutesStep3(menuRoutes)
   return menuRoutes
 }
 
-function buildMenuRoutesStep1(menus) {
+function buildMenuRoutesStep1 (menus) {
   const tempRoutes = []
   menus.forEach(ele => {
     const tempObj = {}
@@ -311,7 +312,7 @@ function buildMenuRoutesStep1(menus) {
   return tempRoutes
 }
 
-function buildMenuRoutesStep2(routes, parent) {
+function buildMenuRoutesStep2 (routes, parent) {
   routes.forEach(ele => {
     if (ele.children) {
       buildMenuRoutesStep2(ele.children, ele)
@@ -326,7 +327,7 @@ function buildMenuRoutesStep2(routes, parent) {
   })
 }
 
-function buildMenuRoutesStep3(routes) {
+function buildMenuRoutesStep3 (routes) {
   routes.forEach((ele, index) => {
     if (ele.children) {
       buildMenuRoutesStep3(ele.children)
