@@ -2,7 +2,7 @@
 @import '../../../base.less';
 .sider-menu {
   text-align: left;
-  font-size: 32px;
+  font-size: 2rem /* 32/16 */;
   overflow: auto;
   .menu-item-title {
     width: 100%;

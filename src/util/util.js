@@ -180,32 +180,65 @@ util.encryptPassword = function (str) {
   }
 }
 
-// 对比两个Routes数组的内容是否一致, 返回需要添加的路有数据
-// 注意： 这部分逻辑只针对两层的路由嵌套
-util.martchRoutes = function (targetArr, sourceArr, root = null) {
+/***
+ * 对比两个Routes数组的内容是否一致, 返回不一样的数据
+ * 参数revers: boolean
+ * false表示正向，即找出需要动态添加的路由数据
+ * true表示反向，即找出不可访问的路由（因为已经动态添加的路由没法移除，除非刷新操作）
+ * 注意： 这部分逻辑只针对两层的路由嵌套
+ */
+util.martchRoutes = function (targetArr, sourceArr) {
   const temp = []
   targetArr.forEach(target => {
-    const tempRoot = root || target
-    sourceArr.forEach(source => {
-      console.log(target.name)
-      console.log(source.name)
-      console.log(target.name === source.name)
-      if (target.name === source.name) {
-        if (target.children && source.children) {
+    // 重置一下状态
+    target.active = true
+    const cloneTarget = JSON.parse(JSON.stringify(target))
+    for (let source of sourceArr) {
+      if (cloneTarget.name === source.name) {
+        if (cloneTarget.children && source.children) {
           // 继续对比children数组
-          const newChildren = util.martchRoutes(target.children, source.children, tempRoot)
+          const newChildren = util.martchRoutes(cloneTarget.children, source.children)
           if (newChildren.length > 0) {
-            tempRoot.children = newChildren
-            temp.push(tempRoot)
+            cloneTarget.children = newChildren
+            cloneTarget.active = true
+          } else {
+            cloneTarget.active = false
           }
+        } else {
+          cloneTarget.active = false
         }
-      } else {
-        // 目标路由需要添加进理由
-        temp.push(target)
+        break
       }
-    })
+    }
+    if (cloneTarget.active) {
+      temp.push(cloneTarget)
+    }
   })
   return temp
+}
+
+// 检查当前路由是否可访问
+util.canRouteAcccess = function (name, sourceArr) {
+  console.log(sourceArr)
+  // 目标路由是否可访问
+  if (sourceArr.length === 0) {
+    return true
+  }
+  for (let item of sourceArr) {
+    if (item.children) {
+      for (let child of item.children) {
+        if (child.name === name) {
+          return false
+        }
+      }
+    } else {
+      if (item.name === name) {
+        return false
+      }
+    }
+  }
+  console.log('不会到这里！')
+  return true
 }
 
 export default util

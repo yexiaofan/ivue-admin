@@ -1,4 +1,4 @@
-const menus = [{
+const menus1 = [{
     id: 1,
     parentId: 0,
     url: '/main',
@@ -18,6 +18,29 @@ const menus = [{
     type: 'menu',
     component: 'views/test-q.vue'
   },
+  {
+    id: 9,
+    parentId: 1,
+    url: '/test6',
+    name: 'test6',
+    title: '测试6',
+    icon: 'ios-paper',
+    type: 'menu',
+    component: 'views/test/test6.vue'
+  },
+  {
+    id: 10,
+    parentId: 1,
+    url: '/test7',
+    name: 'test7',
+    title: '测试7',
+    icon: 'ios-paper',
+    type: 'menu',
+    component: 'views/test/test7.vue'
+  }
+]
+
+const menus2 = [
   {
     id: 3,
     parentId: 0,
@@ -77,26 +100,6 @@ const menus = [{
     icon: 'ios-paper',
     type: 'menu',
     component: 'views/test/test5.vue'
-  },
-  {
-    id: 9,
-    parentId: 1,
-    url: '/test6',
-    name: 'test6',
-    title: '测试6',
-    icon: 'ios-paper',
-    type: 'menu',
-    component: 'views/test/test6.vue'
-  },
-  {
-    id: 10,
-    parentId: 1,
-    url: '/test7',
-    name: 'test7',
-    title: '测试7',
-    icon: 'ios-paper',
-    type: 'menu',
-    component: 'views/test/test7.vue'
   },
   {
     id: 11,
@@ -178,6 +181,12 @@ const menus = [{
   }
 ]
 
+let menus = menus1
+setTimeout(() => {
+  console.log('change to menus2')
+  menus = menus2
+},5000)
+
 async function getDynamicMenusRes() {
   const menus = await getDynamicMenus()
   const dynamicMenuRes = initMenuTree(menus)
@@ -195,9 +204,10 @@ function getDynamicMenus() {
 }
 
 function initMenuTree(menus) {
+  const cloneMenus = JSON.parse(JSON.stringify(menus))
   const tree = []
   let leaves = []
-  menus.forEach(menu => {
+  cloneMenus.forEach(menu => {
     if (menu.parentId === 0) {
       tree.push(menu)
     } else {

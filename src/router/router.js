@@ -2,6 +2,7 @@ import Vue from 'vue'
 import iView from 'iview'
 import Router from 'vue-router'
 import { staticRoutes, siderRoutes, staticMenuList } from './static-routes'
+import util from '../util/util'
 import store from '../store/store'
 import getDynamicMenusRes from './dynamic-routes'
 
@@ -20,7 +21,7 @@ export default router
 router.beforeEach((to, from, next) => {
   // iview 加载进度条
   iView.LoadingBar.start()
-  if (from.path === '/' && !from.name || from.name === 'login') {
+  if ((from.path === '/' && !from.name && to.name !== 'login') || from.name === 'login') {
     // 页面刷新或第一次打开页面
     if (store.state.app.asyncRoutesCompleted) {
       next()
@@ -28,7 +29,12 @@ router.beforeEach((to, from, next) => {
       initSiderMenuAndAsyncRoutes(to, next)
     }
   } else {
-    next()
+    // 检查当前的路由是否是动态路由且可访问
+    if (util.canRouteAcccess(to.name, store.state.app.unaccessibleAcyncRoutes)) {
+      next()
+    } else {
+      next('/404')
+    }
   }
 })
 

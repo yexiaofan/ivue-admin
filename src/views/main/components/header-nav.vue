@@ -10,7 +10,7 @@
     flex: 1 1 auto;
     margin-left: 16px;
     text-align: left;
-    font-size: 20px;
+    font-size: 1.25rem /* 20/16 */;
   }
   .config-wrapper {
     flex: 0 0 264px;
@@ -18,7 +18,7 @@
     text-align: left;
     a {
       i {
-        font-size: 20px;
+        font-size: 1.25rem /* 20/16 */;
       }
     }
     .dark-a {
@@ -41,13 +41,13 @@
     display: flex;
     align-items: center;
     span {
-      font-size: 14px;
+      font-size: .875rem /* 14/16 */;
       margin-left: 4px;
       font-weight: bold;
     }
   }
   .setting-label {
-    font-size: 13px;
+    font-size: .8125rem /* 13/16 */;
     margin: 4px 0;
   }
 }
@@ -61,7 +61,7 @@
         <BreadcrumbItem
           v-for="(path, index) in currentPath"
           :key="index"
-          style="font-size: 14px;"
+          style="font-size: 0.875rem;"
         >{{path}}</BreadcrumbItem>
       </Breadcrumb>
     </div>

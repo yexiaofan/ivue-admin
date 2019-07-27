@@ -19,6 +19,11 @@ const singleRoutes = [
     path: '/login',
     name: 'login',
     component: () => import('../views/login/login.vue')
+  },
+  {
+    path: '/404',
+    name: '404',
+    component: () => import('../views/error-page/404.vue')
   }
 ]
 
