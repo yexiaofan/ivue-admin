@@ -5,10 +5,10 @@ import jaLang from './config/ja_JP'
 import koLang from './config/ko_KR'
 
 const messages = {
-  zh_CN: Object.assign(zhLang, iviewLangs['zh_CN']),
-  en_US: Object.assign(enLang, iviewLangs['en_US']),
-  ja_JP: Object.assign(jaLang, iviewLangs['ja_JP']),
-  ko_KR: Object.assign(koLang, iviewLangs['ko_KR'])
+  zh_CN: Object.assign(zhLang, iviewLangs['zh']),
+  en_US: Object.assign(enLang, iviewLangs['en']),
+  ja_JP: Object.assign(jaLang, iviewLangs['ja']),
+  ko_KR: Object.assign(koLang, iviewLangs['ko'])
 }
 
 const localeI18n = {
