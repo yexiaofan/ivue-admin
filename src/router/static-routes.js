@@ -187,4 +187,4 @@ const staticSiderRoutes = getMenuRoutes(siderTree)
 // 汇总所有的路由
 const staticRoutes = [...staticSiderRoutes, ...singleRoutes]
 
-export { staticRoutes, staticMenuList }
+export { staticRoutes, staticMenuList, staticSiderRoutes, singleRoutes }

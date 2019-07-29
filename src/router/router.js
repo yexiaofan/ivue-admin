@@ -29,8 +29,9 @@ router.beforeEach((to, from, next) => {
       initSiderMenuAndAsyncRoutes(to, next)
     }
   } else {
-    // 检查当前的路由是否是动态路由且可访问
-    if (util.canRouteAcccess(to.name, store.state.app.unaccessibleAcyncRoutes)) {
+    // 检查当前的路由是否是可访问或是有效的路由
+    if (util.canRouteAcccess(to.name, store.state.app.unaccessibleAcyncRoutes, store.state.app.acyncRoutes, staticRoutes)) {
+      // 检查当前目标路由是否已添加
       next()
     } else {
       next('/404')

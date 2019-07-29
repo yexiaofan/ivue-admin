@@ -182,9 +182,6 @@ util.encryptPassword = function (str) {
 
 /***
  * 对比两个Routes数组的内容是否一致, 返回不一样的数据
- * 参数revers: boolean
- * false表示正向，即找出需要动态添加的路由数据
- * true表示反向，即找出不可访问的路由（因为已经动态添加的路由没法移除，除非刷新操作）
  * 注意： 这部分逻辑只针对两层的路由嵌套
  */
 util.martchRoutes = function (targetArr, sourceArr) {
@@ -193,6 +190,13 @@ util.martchRoutes = function (targetArr, sourceArr) {
     // 重置一下状态
     target.active = true
     const cloneTarget = JSON.parse(JSON.stringify(target))
+    cloneTarget.component = target.component
+    // 如果存在children，则children的component也要处理一下
+    if (target.children) {
+      for (let i = 0; i < target.children.length; i++) {
+        cloneTarget.children[i].component = target.children[i].component
+      }
+    }
     for (let source of sourceArr) {
       if (cloneTarget.name === source.name) {
         if (cloneTarget.children && source.children) {
@@ -218,27 +222,56 @@ util.martchRoutes = function (targetArr, sourceArr) {
 }
 
 // 检查当前路由是否可访问
-util.canRouteAcccess = function (name, sourceArr) {
-  console.log(sourceArr)
-  // 目标路由是否可访问
-  if (sourceArr.length === 0) {
-    return true
-  }
-  for (let item of sourceArr) {
-    if (item.children) {
-      for (let child of item.children) {
-        if (child.name === name) {
+util.canRouteAcccess = function (name, unaccessibleAcyncRoutes, acyncRoutes, staticRoutes) {
+  // 检查路由是否处在动态路由黑名单中
+  if (unaccessibleAcyncRoutes.length > 0) {
+    for (let item of unaccessibleAcyncRoutes) {
+      if (item.children) {
+        for (let child of item.children) {
+          if (child.name === name) {
+            return false
+          }
+        }
+      } else {
+        if (item.name === name) {
           return false
         }
       }
-    } else {
-      if (item.name === name) {
-        return false
+    }
+  }
+  // 检查路由是否是在动态路由白名单中
+  if (acyncRoutes.length > 0) {
+    for (let item of acyncRoutes) {
+      if (item.children) {
+        for (let child of item.children) {
+          if (child.name === name) {
+            return true
+          }
+        }
+      } else {
+        if (item.name === name) {
+          return true
+        }
       }
     }
   }
-  console.log('不会到这里！')
-  return true
+  // 检查路由是否是静态路由
+  if (staticRoutes.length > 0) {
+    for (let item of staticRoutes) {
+      if (item.children) {
+        for (let child of item.children) {
+          if (child.name === name) {
+            return true
+          }
+        }
+      } else {
+        if (item.name === name) {
+          return true
+        }
+      }
+    }
+  }
+  return false
 }
 
 export default util
