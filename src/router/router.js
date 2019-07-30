@@ -56,7 +56,7 @@ function initSiderMenuAndAsyncRoutes (to, next) {
     if (to.name) {
       next()
     } else {
-      next(to.path)
+      next(router.resolve(to).route.fullPath)
     }
   }).catch(err => {
     console.log(err)
