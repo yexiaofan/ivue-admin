@@ -23,7 +23,7 @@ const singleRoutes = [
   {
     path: '/404',
     name: '404',
-    component: () => import('../views/error-page/404.vue')
+    component: () => import('../views/error-pages/404.vue')
   }
 ]
 
