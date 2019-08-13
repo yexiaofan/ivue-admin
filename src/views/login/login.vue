@@ -5,6 +5,8 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  width: 100%;
+  height: 100%;
   img {
     position: absolute;
     top: 0;
@@ -47,7 +49,7 @@
 </style>
 
 <template>
-  <div class="wrapper login">
+  <div class="login">
     <img :src="bgImg" alt />
     <Card class="login-form">
       <header>

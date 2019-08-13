@@ -127,7 +127,7 @@ const menus2 = [
     parentId: 3,
     url: '/test10',
     name: 'test10',
-    title: '测试10',
+    title: '测试101111111111111',
     icon: 'ios-paper',
     type: 'menu',
     component: 'views/test/test10.vue'
@@ -137,7 +137,7 @@ const menus2 = [
     parentId: 3,
     url: '',
     name: '',
-    title: '测试11',
+    title: '测试11111111111111111111111111111111111',
     icon: 'ios-paper',
     type: 'menu',
     component: ''
@@ -147,7 +147,7 @@ const menus2 = [
     parentId: 14,
     url: '/test11-1',
     name: 'test11-1',
-    title: '测试11-1',
+    title: '测试11-11111111111111111111111111111111',
     icon: 'ios-paper',
     type: 'menu',
     component: 'views/test/test11.vue'
@@ -157,7 +157,7 @@ const menus2 = [
     parentId: 14,
     url: '/test11-2',
     name: 'test11-2',
-    title: '测试11-2',
+    title: '测试11-22222222222222222222222222222222',
     icon: 'ios-paper',
     type: 'menu',
     component: 'views/test/test12.vue'
@@ -182,11 +182,11 @@ const menus2 = [
   }
 ]
 
-let menus = menus1
-setTimeout(() => {
-  console.log('change to menus2')
-  menus = menus2
-}, 5000)
+let menus = [...menus1, ...menus2]
+// setTimeout(() => {
+//   console.log('change to menus2')
+//   menus = menus2
+// }, 5000)
 
 async function getDynamicMenusRes () {
   const menus = await getDynamicMenus()
@@ -199,7 +199,7 @@ function getDynamicMenus () {
     setTimeout(() => {
       console.log('成功获取menus')
       resolve(menus)
-    }, 3000)
+    }, 1000)
     // 错误 reject([])
   })
 }

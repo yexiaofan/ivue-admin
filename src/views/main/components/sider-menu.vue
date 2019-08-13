@@ -5,7 +5,7 @@
   font-size: 2rem /* 32/16 */;
   overflow: auto;
   .menu-item-title {
-    width: 100%;
+    width: 88%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;/**不换行**/
@@ -20,7 +20,7 @@
 
 <template>
   <div class="sider-menu">
-    <Menu :accordion="true" theme="dark" :open-names="openNames" width="200" :active-name="activeName" @on-select="menuSlected" @on-open-change="openChange">
+    <Menu :accordion="false" theme="dark" :open-names="openNames" width="200" :active-name="activeName" @on-select="menuSlected" @on-open-change="openChange">
       <template v-for="(menu_1, index) in menuList">
         <template v-if="menu_1.children.length === 1">
           <MenuItem :name="menu_1.children[0].name" :key="'menu_1_' + index"

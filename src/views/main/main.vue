@@ -3,22 +3,28 @@
 </style>
 
 <template>
-  <div class="wrapper main">
-    <div class="main-sider menu-scrollbar">
-      <div class="logo">
-        <Icon type="ios-water" />LOGO
-      </div>
-      <!--菜单最多支持二级菜单-->
-      <sider-menu :menuList="menuList" :openNames="openNames"></sider-menu>
+  <div class="main">
+    <div class="main-sider menu-scrollbar" :style="siderStyles">
+        <div class="logo">
+          <Icon type="ios-water" />
+          <template v-if="!shrink">
+            LOGO
+          </template>
+        </div>
+        <!--菜单最多支持二级菜单-->
+        <sider-menu-shrinked v-if="shrink" :menuList="menuList"></sider-menu-shrinked>
+        <sider-menu v-else :menuList="menuList" :openNames="openNames"></sider-menu>
     </div>
-    <div class="main-header">
+    <div class="main-header" :style="otherStyles">
       <header-nav :currentPath="currentPath"
-        :avatorUrl="avatorUrl"></header-nav>
+        :avatorUrl="avatorUrl"
+        :shrink="shrink"
+        @toggleShrink="toggleShrink"></header-nav>
       <tags-nav :pageOpenedList="pageOpenedList"
         @closeTags="closeTags"
         @tagSelected="tagSelected"></tags-nav>
     </div>
-    <div class="main-content common-scrollbar">
+    <div class="main-content common-scrollbar" :style="otherStyles">
       <router-view></router-view>
     </div>
   </div>
@@ -29,15 +35,28 @@ export default {
   name: 'Main',
   data () {
     return {
-      avatorUrl: 'https://i.loli.net/2017/08/21/599a521472424.jpg'
+      avatorUrl: 'https://i.loli.net/2017/08/21/599a521472424.jpg',
+      shrink: true
     }
   },
   components: {
     'sider-menu': () => import('./components/sider-menu'),
+    'sider-menu-shrinked': () => import('./components/sider-menu-shrinked'),
     'header-nav': () => import('./components/header-nav'),
     'tags-nav': () => import('./components/tags-nav')
   },
   computed: {
+    siderStyles () {
+      return {
+        width: this.shrink ? '64px' : '240px',
+        overflow: this.shrink ? 'visible' : 'auto'
+      }
+    },
+    otherStyles () {
+      return {
+        left: this.shrink ? '64px' : '240px'
+      }
+    },
     menuList () {
       return this.$store.state.app.menuList
     },
@@ -93,6 +112,10 @@ export default {
       this.$router.push({
         name: this.$store.state.app.pageOpenedList[index].name
       })
+    },
+    toggleShrink () {
+      this.shrink = !this.shrink
+      console.log(this.shrink)
     }
   },
   created () {
