@@ -83,7 +83,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       bgImg: null,
       loginForm: {
@@ -112,13 +112,13 @@ export default {
           }
         ]
       }
-    };
+    }
   },
   methods: {
-    init() {
+    init () {
       this.startBgAnimation()
     },
-    startBgAnimation() {
+    startBgAnimation () {
       let count = 1
       this.bgImg = require('../../assets/login-bg1/' + (count - 1) + '.jpg')
       setInterval(() => {
@@ -129,7 +129,7 @@ export default {
         count++
       }, 8000)
     },
-    handleSubmit(name) {
+    handleSubmit (name) {
       this.$refs[name].validate(valid => {
         if (valid) {
           this.$router.push('/home')
@@ -137,7 +137,7 @@ export default {
       })
     }
   },
-  created() {
+  created () {
     this.init()
   }
 }
