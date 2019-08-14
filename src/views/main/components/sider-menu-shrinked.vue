@@ -82,9 +82,6 @@ export default {
     navigateRoute (name) {
       this.$router.push({ name })
     }
-  },
-  created() {
-    console.log(this.menuList) 
   }
 }
 </script>
