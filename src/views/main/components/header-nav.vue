@@ -179,7 +179,8 @@ import { setTimeout } from 'timers';
       styles() {
         return {
           transform: this.shrink ? 'rotate(90deg)' : 'rotate(0deg)',
-          transition: 'all 0.3s ease-in-out'
+          transition: 'all 0.3s ease-in-out',
+          cursor: 'pointer'
         }
       }
     },
@@ -213,14 +214,9 @@ import { setTimeout } from 'timers';
         const requestMethod = element.requestFullScreen || // W3C
           element.webkitRequestFullScreen || // Chrome, safari
           element.mozRequestFullScreen || // FireFox
-          element.msRequestFullScreen // IE11
+          element.msRequestFullscreen // IE11
         if (requestMethod) {
           requestMethod.call(element)
-        } else if (typeof window.ActiveXObject !== 'undefined') { // for Internet Explorer
-          var wscript = new ActiveXObject('WScript.Shell')
-          if (wscript !== null) {
-            wscript.SendKeys('{F11}')
-          }
         }
       },
       exitFullScreen() {
@@ -230,11 +226,6 @@ import { setTimeout } from 'timers';
           document.msExitFullscreen // IE11
         if (exitMethod) {
           exitMethod.call(document)
-        } else if (typeof window.ActiveXObject !== 'undefined') { // for Internet Explorer
-          var wscript = new ActiveXObject('WScript.Shell')
-          if (wscript !== null) {
-            wscript.SendKeys('{F11}')
-          }
         }
       },
       addFullScreenListener() {
