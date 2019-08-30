@@ -14,7 +14,14 @@ const routerConfig = {
   ]
 }
 
-const router = new Router(routerConfig)
+const createRouter = () => new Router(routerConfig)
+
+const router = createRouter()
+
+function resetRouter () {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher
+}
 
 export default router
 
@@ -29,9 +36,10 @@ router.beforeEach((to, from, next) => {
       initSiderMenuAndAsyncRoutes(to, next)
     }
   } else {
-    // 检查当前的路由是否是可访问或是有效的路由
-    if (util.canRouteAcccess(to.name, store.state.app.unaccessibleAcyncRoutes, store.state.app.acyncRoutes, staticRoutes)) {
-      // 检查当前目标路由是否已添加
+    if (to.name) {
+      if (to.name === 'login') {
+        resetRouter()
+      }
       next()
     } else {
       next('/404')

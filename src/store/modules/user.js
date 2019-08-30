@@ -10,7 +10,6 @@ const user = {
       state.userInfo = null
       localStorage.clear()
       sessionStorage.clear()
-      console.log(this.state.app.menuList)
     },
     initUserInfo (state, info) {
       state.userInfo = info

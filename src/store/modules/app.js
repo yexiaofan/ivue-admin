@@ -10,41 +10,12 @@ const app = {
     }],
     currentPath: ['首页'],
     currentMenuOpenNames: [],
-    asyncRoutesCompleted: false, // 是否添加过动态路由数据
-    acyncRoutes: [],
-    unaccessibleAcyncRoutes: []
+    asyncRoutesCompleted: false // 是否添加过动态路由数据
   },
   mutations: {
     // 添加动态路由
     updateAppRouter (state, routes) {
-      // 过滤acyncRoutes，防止添加重复数据，删除已不存在的数据
-      let tempRoutes = []
-      if (state.acyncRoutes.length === 0) {
-        tempRoutes = routes
-        state.acyncRoutes = routes
-      } else {
-        // 过滤已经存在的路由
-        tempRoutes = util.martchRoutes(routes, state.acyncRoutes)
-        // 保存已添加但是不可访问的路由数据
-        state.unaccessibleAcyncRoutes = util.martchRoutes(state.acyncRoutes, routes)
-        // 将新的路由进行合并
-        tempRoutes.forEach(route => {
-          if (route.children) {
-            for (let i = 0; i < state.acyncRoutes.length; i++) {
-              if (route.name === state.acyncRoutes[i].name) {
-                state.acyncRoutes[i].children.concat(route.children)
-                break
-              }
-              if (i === state.acyncRoutes.length - 1) {
-                state.acyncRoutes.push(route)
-              }
-            }
-          } else {
-            state.acyncRoutes.push(route)
-          }
-        })
-      }
-      router.addRoutes(tempRoutes)
+      router.addRoutes(routes)
       state.asyncRoutesCompleted = true
     },
     // 设置左侧菜单数据
