@@ -43,6 +43,26 @@ const menus1 = [
 
 const menus2 = [
   {
+    id: 1,
+    parentId: 0,
+    url: '/main',
+    name: 'main-q',
+    title: '测试模块2',
+    icon: 'ios-paper',
+    type: 'menu',
+    component: 'views/main/main.vue'
+  },
+  {
+    id: 2,
+    parentId: 1,
+    url: '/test-q',
+    name: 'test-q',
+    title: '测试模块2',
+    icon: 'ios-paper',
+    type: 'menu',
+    component: 'views/test-q.vue'
+  },
+  {
     id: 3,
     parentId: 0,
     url: '/test',
@@ -182,11 +202,11 @@ const menus2 = [
   }
 ]
 
-let menus = [...menus1, ...menus2]
-// setTimeout(() => {
-//   console.log('change to menus2')
-//   menus = menus2
-// }, 5000)
+let menus = menus1
+setTimeout(() => {
+  console.log('change to menus2')
+  menus = menus2
+}, 5000)
 
 async function getDynamicMenusRes () {
   const menus = await getDynamicMenus()
