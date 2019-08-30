@@ -15,7 +15,6 @@ const routerConfig = {
 }
 
 const createRouter = () => new Router(routerConfig)
-
 const router = createRouter()
 
 function resetRouter () {
@@ -36,7 +35,7 @@ router.beforeEach((to, from, next) => {
       initSiderMenuAndAsyncRoutes(to, next)
     }
   } else {
-    if (to.name) {
+    if (to.matched.length > 0) {
       if (to.name === 'login') {
         resetRouter()
       }
@@ -61,11 +60,7 @@ function initSiderMenuAndAsyncRoutes (to, next) {
     store.commit('setMenuList', res.menuList)
     // 添加动态路由
     store.commit('updateAppRouter', res.menuRoutes)
-    if (to.name) {
-      next()
-    } else {
-      next(router.resolve(to).route.fullPath)
-    }
+    next(router.resolve(to).route.fullPath)
   }).catch(err => {
     console.log(err)
   })
